@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product lines — Molecular White · BIOMED</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fff9fb;
+      --card: #ffffff;
+      --card-hover: #fffafc;
+      --line: rgba(199, 91, 122, 0.16);
+      --text: #1a1218;
+      --muted: #6b5f68;
+      --accent: #c75b7a;
+      --accent-deep: #a84866;
+      --accent-soft: #fce3ec;
+      --mint: #7dd4b8;
+      --radius: 20px;
+      --font-body: "Onest", system-ui, sans-serif;
+      --font-display: "Unbounded", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 249, 251, 0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .header-inner {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .logo span { color: var(--accent); font-weight: 600; }
+    nav { display: flex; gap: 14px; flex-wrap: wrap; }
+    nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+    nav a:hover,
+    nav a.is-current { color: var(--accent-deep); font-weight: 600; }
+
+    main {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 5vw, 1.85rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0 0 22px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      margin: 36px 0 14px;
+    }
+    .section-title:first-of-type { margin-top: 0; }
+
+    .file-warning {
+      background: var(--accent-soft);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .file-warning strong { color: var(--accent-deep); }
+
+    .card-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .p-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .p-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(199, 91, 122, 0.28);
+      box-shadow: 0 12px 40px rgba(199, 91, 122, 0.08);
+    }
+
+    .p-card__media {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: linear-gradient(180deg, #fff 0%, #fff5f9 100%);
+      position: relative;
+    }
+    .p-card__media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .p-card__media--empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .p-card__body {
+      padding: 16px 16px 14px;
+    }
+    .p-card__cat {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mint);
+      margin-bottom: 8px;
+    }
+    .p-card__title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.25;
+      margin: 0 0 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .p-card__desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.5;
+    }
+    .p-card__desc.is-clamped {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .p-card__toggle {
+      margin-top: 8px;
+      padding: 0;
+      border: none;
+      background: none;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      display: none;
+    }
+    .p-card__toggle.is-visible { display: inline; }
+
+    .p-card__extras {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      display: none;
+    }
+    .p-card__extras.is-open { display: block; }
+
+    .icon-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    .icon-mini {
+      width: auto;
+      height: 40px;
+      max-width: 56px;
+      object-fit: contain;
+      border-radius: 0;
+      background: transparent;
+      vertical-align: middle;
+    }
+
+    .price-block {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+    .price-block span { display: block; }
+    .price-block strong { color: var(--text); font-weight: 600; }
+
+    .ext-banner-preview {
+      margin-top: 12px;
+    }
+    .ext-banner-preview span {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .ext-banner-preview img {
+      margin-top: 8px;
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+    }
+
+    .p-card__footer {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px 16px;
+      border-top: 1px solid var(--line);
+      background: linear-gradient(180deg, transparent, rgba(252, 227, 236, 0.35));
+    }
+    .p-card__price-main {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .p-card__price-main small {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .p-card__more {
+      flex-shrink: 0;
+      padding: 0;
+      border: none;
+      background: none;
+      font: inherit;
+      font-size: 0.82rem;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .p-card__more:hover { color: var(--accent); }
+
+    footer {
+      text-align: center;
+      border-top: 1px solid var(--line);
+      padding: 22px 16px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      background: #fff;
+    }
+
+    @media (min-width: 720px) {
+      .header-inner,
+      main { max-width: 640px; }
+      .card-grid.two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+    }
+    @media (max-width: 600px) {
+      html, body { overflow-x: hidden; }
+      .header-inner { padding: 12px 14px; }
+      nav { gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a class="logo" href="BIOMED_Molecular_White_demo.html">BIOMED <span>Molecular White</span></a>
+      <nav>
+        <a href="BIOMED_Molecular_White_demo.html">Home</a>
+        <a href="BIOMED_Molecular_White_products.html" class="is-current">Lines</a>
+        <a href="BIOMED_Molecular_White_game.html">Game</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>Product lines</h1>
+
+    <div id="fileWarning" class="file-warning" hidden></div>
+
+    <div class="section-title" id="line-mass">Mass</div>
+    <div class="card-grid two-col" id="massGrid"></div>
+
+    <div class="section-title" id="line-premium">Premium</div>
+    <div class="card-grid two-col" id="premiumGrid"></div>
+
+    <div class="section-title" id="extensions">Premium · non-paste</div>
+    <div class="card-grid two-col" id="extGrid"></div>
+  </main>
+
+  <footer>© 2026 BIOMED Molecular White</footer>
+
+  <script>
+    async function loadProducts() {
+      try {
+        const r = await fetch("products-data.json", { cache: "no-store" });
+        if (!r.ok) throw new Error("No json");
+        return await r.json();
+      } catch (_) {
+        return {
+          loadFailed: true,
+          products: [],
+          extensions: [],
+          gameIcons: []
+        };
+      }
+    }
+
+    function bindImgError(img, label) {
+      img.addEventListener("error", function onErr() {
+        img.removeEventListener("error", onErr);
+        img.style.display = "none";
+        const note = document.createElement("span");
+        note.className = "img-miss";
+        note.style.cssText = "font-size:0.8rem;color:var(--accent-deep);padding:8px;";
+        note.textContent = label || "Image missing — check path or run site from folder with site-assets/";
+        img.parentElement.appendChild(note);
+      });
+    }
+
+    function resolveIcons(item, data) {
+      if (item.icons === "shared" && Array.isArray(data.sharedIcons)) return data.sharedIcons;
+      if (Array.isArray(item.icons)) return item.icons.filter(Boolean);
+      return [];
+    }
+
+    function formatPriceFooter(item) {
+      const line =
+        item.priceUsd ||
+        (item.price && typeof item.price === "object" && item.price.rsp ? item.price.rsp : "") ||
+        "";
+      if (!line) return { line: "—", sub: "" };
+      return { line: line, sub: "USD · retail" };
+    }
+
+    function needsClamp(text) {
+      return (text || "").length > 120;
+    }
+
+    function wireExpand(descEl, toggleBtn) {
+      if (!needsClamp(descEl.textContent || "")) return;
+      descEl.classList.add("is-clamped");
+      toggleBtn.classList.add("is-visible");
+      toggleBtn.textContent = "Show more";
+      let open = false;
+      toggleBtn.addEventListener("click", () => {
+        open = !open;
+        descEl.classList.toggle("is-clamped", !open);
+        toggleBtn.textContent = open ? "Show less" : "Show more";
+      });
+    }
+
+    function buildCard(item, data, categoryLabel) {
+      const card = document.createElement("article");
+      card.className = "p-card";
+
+      const media = document.createElement("div");
+      media.className = "p-card__media";
+      if (item.image) {
+        const cover = document.createElement("img");
+        cover.alt = item.name || "Product";
+        cover.loading = "lazy";
+        cover.src = item.image;
+        bindImgError(cover, "Photo not found: " + item.image);
+        media.appendChild(cover);
+      } else {
+        media.classList.add("p-card__media--empty");
+        media.textContent = "Add image path in products-data.json";
+      }
+      card.appendChild(media);
+
+      const body = document.createElement("div");
+      body.className = "p-card__body";
+
+      const cat = document.createElement("div");
+      cat.className = "p-card__cat";
+      cat.textContent = categoryLabel;
+      body.appendChild(cat);
+
+      const title = document.createElement("h3");
+      title.className = "p-card__title";
+      title.textContent = item.name || "Product";
+      body.appendChild(title);
+
+      const desc = document.createElement("p");
+      desc.className = "p-card__desc";
+      desc.textContent = item.description || "";
+      body.appendChild(desc);
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "p-card__toggle";
+      body.appendChild(toggle);
+      wireExpand(desc, toggle);
+
+      const iconList = resolveIcons(item, data);
+      if (iconList.length) {
+        const row = document.createElement("div");
+        row.className = "icon-row";
+        iconList.forEach(src => {
+          const img = document.createElement("img");
+          img.className = "icon-mini";
+          img.src = src;
+          img.alt = "certification";
+          img.loading = "lazy";
+          bindImgError(img, "Icon: " + src);
+          row.appendChild(img);
+        });
+        body.appendChild(row);
+      }
+
+      const extras = document.createElement("div");
+      extras.className = "p-card__extras";
+
+      body.appendChild(extras);
+
+      const footer = document.createElement("div");
+      footer.className = "p-card__footer";
+      const pf = formatPriceFooter(item);
+      const priceBox = document.createElement("div");
+      priceBox.className = "p-card__price-main";
+      priceBox.innerHTML = pf.line + "<small>" + pf.sub + "</small>";
+      footer.appendChild(priceBox);
+
+      card.appendChild(body);
+      card.appendChild(footer);
+      return card;
+    }
+
+    function buildExtensionCard(item, data) {
+      const card = document.createElement("article");
+      card.className = "p-card";
+
+      const media = document.createElement("div");
+      media.className = "p-card__media";
+      if (item.image) {
+        const img = document.createElement("img");
+        img.src = item.image;
+        img.alt = item.name || "";
+        img.loading = "lazy";
+        bindImgError(img, "Photo not found: " + item.image);
+        media.appendChild(img);
+      }
+      card.appendChild(media);
+
+      const body = document.createElement("div");
+      body.className = "p-card__body";
+
+      const cat = document.createElement("div");
+      cat.className = "p-card__cat";
+      cat.textContent = "Extension · oral care";
+      body.appendChild(cat);
+
+      const title = document.createElement("h3");
+      title.className = "p-card__title";
+      title.textContent = item.name;
+      body.appendChild(title);
+
+      const desc = document.createElement("p");
+      desc.className = "p-card__desc";
+      desc.textContent = item.description || "";
+      body.appendChild(desc);
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "p-card__toggle";
+      body.appendChild(toggle);
+      wireExpand(desc, toggle);
+
+      const iconList = resolveIcons(item, data);
+      if (iconList.length) {
+        const row = document.createElement("div");
+        row.className = "icon-row";
+        iconList.forEach(src => {
+          const im = document.createElement("img");
+          im.className = "icon-mini";
+          im.src = src;
+          im.alt = "certification";
+          im.loading = "lazy";
+          bindImgError(im, "Icon: " + src);
+          row.appendChild(im);
+        });
+        body.appendChild(row);
+      }
+
+      const extras = document.createElement("div");
+      extras.className = "p-card__extras";
+
+      if (item.bannerHome) {
+        const wrap = document.createElement("div");
+        wrap.className = "ext-banner-preview";
+        const lab = document.createElement("span");
+        lab.textContent = "Home banner";
+        wrap.appendChild(lab);
+        const bimg = document.createElement("img");
+        bimg.src = item.bannerHome;
+        bimg.alt = "";
+        bimg.loading = "lazy";
+        bindImgError(bimg, "Banner: " + item.bannerHome);
+        wrap.appendChild(bimg);
+        extras.appendChild(wrap);
+      }
+
+      body.appendChild(extras);
+
+      const moreBtn = document.createElement("button");
+      moreBtn.type = "button";
+      moreBtn.className = "p-card__more";
+      moreBtn.innerHTML = "More details →";
+      moreBtn.addEventListener("click", () => {
+        const on = extras.classList.toggle("is-open");
+        moreBtn.innerHTML = on ? "Hide details →" : "More details →";
+      });
+      if (extras.childElementCount === 0) moreBtn.style.display = "none";
+
+      const footer = document.createElement("div");
+      footer.className = "p-card__footer";
+      const priceBox = document.createElement("div");
+      priceBox.className = "p-card__price-main";
+      const pf = formatPriceFooter(item);
+      priceBox.innerHTML = pf.line + "<small>" + pf.sub + "</small>";
+      footer.appendChild(priceBox);
+      footer.appendChild(moreBtn);
+
+      card.appendChild(body);
+      card.appendChild(footer);
+      return card;
+    }
+
+    loadProducts().then(data => {
+      const fw = document.getElementById("fileWarning");
+      if (data.loadFailed) {
+        if (fw) {
+          fw.hidden = false;
+          fw.innerHTML =
+            "<strong>Не загрузился products-data.json.</strong> Откройте сайт через локальный сервер: в папке проекта выполните <code>npm start</code> и зайдите на <strong>http://localhost:3847/BIOMED_Molecular_White_products.html</strong>. Двойной клик по HTML из Finder часто блокирует загрузку JSON.";
+        }
+        return;
+      }
+      const listEarly = Array.isArray(data.products) ? data.products : [];
+      const extEarly = Array.isArray(data.extensions) ? data.extensions : [];
+      if (
+        window.location.protocol === "file:" &&
+        fw &&
+        listEarly.length === 0 &&
+        extEarly.length === 0
+      ) {
+        fw.hidden = false;
+        fw.innerHTML =
+          "<strong>Режим file://</strong> — каталог пустой: браузер часто не даёт загрузить <code>products-data.json</code> с диска. Запустите <code>npm start</code> и откройте страницу по <code>http://localhost:3847/BIOMED_Molecular_White_products.html</code> — так подгрузятся данные, фото и иконки.";
+      }
+
+      const massGrid = document.getElementById("massGrid");
+      const premiumGrid = document.getElementById("premiumGrid");
+      const extGrid = document.getElementById("extGrid");
+      const list = Array.isArray(data.products) ? data.products : [];
+
+      list.forEach(item => {
+        const label =
+          (item.line || "").toLowerCase() === "premium"
+            ? "Premium · toothpaste"
+            : "Mass · toothpaste";
+        const card = buildCard(item, data, label);
+        if ((item.line || "").toLowerCase() === "premium") premiumGrid.appendChild(card);
+        else massGrid.appendChild(card);
+      });
+
+      const ext = Array.isArray(data.extensions) ? data.extensions : [];
+      ext.forEach(item => extGrid.appendChild(buildExtensionCard(item, data)));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Game — Molecular White · BIOMED</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700&family=Onest:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fff9fb;
+      --text: #1a1218;
+      --muted: #6b5f68;
+      --accent: #c75b7a;
+      --accent-deep: #a84866;
+      --mint: #7dd4b8;
+      --mint-mid: #5bb89a;
+      --rose-line: rgba(199, 91, 122, 0.14);
+      --line: var(--rose-line);
+      --radius: 20px;
+      --font-body: "Onest", system-ui, sans-serif;
+      --font-display: "Unbounded", system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-size: 15px;
+      background: linear-gradient(180deg, #fff5f9 0%, #e4faf2 55%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 249, 251, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.04em;
+      color: var(--text);
+    }
+    .logo span { color: var(--accent); font-weight: 600; }
+    nav { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+    nav a { font-size: 0.9rem; font-weight: 500; color: var(--muted); text-decoration: none; }
+    nav a:hover { color: var(--accent-deep); }
+    nav a.is-current { color: var(--accent); font-weight: 600; }
+
+    .game-page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mint-mid);
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 600;
+      margin: 0 0 12px;
+      letter-spacing: -0.03em;
+    }
+    .lead { color: var(--muted); max-width: 640px; margin-bottom: 28px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 24px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      font-family: var(--font-body);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+      color: #fff;
+      box-shadow: 0 8px 28px rgba(199, 91, 122, 0.35);
+    }
+    .btn-ghost {
+      background: #fff;
+      color: var(--mint-mid);
+      border: 1px solid rgba(93, 184, 154, 0.35);
+    }
+
+    .game-box {
+      background: linear-gradient(135deg, #3d2a3a 0%, #1f141c 100%);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--rose-line);
+    }
+    .game-stage {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: 320px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #4a3545 0%, #1a1218 100%);
+      cursor: none;
+      touch-action: none;
+    }
+    .game-over-layer {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 10;
+      background: rgba(18, 45, 95, 0.62);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: inset 0 0 80px rgba(30, 80, 180, 0.25);
+    }
+    .game-over-layer.is-visible {
+      display: flex;
+    }
+    .game-over-layer h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 5vw, 2.35rem);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #e8f0ff;
+      margin: 0 0 12px;
+      text-shadow: 0 2px 24px rgba(0, 40, 120, 0.5);
+    }
+    .game-over-score {
+      font-size: 1.25rem;
+      color: rgba(232, 240, 255, 0.95);
+      margin: 0 0 24px;
+    }
+    .game-over-score strong {
+      color: #a5d8ff;
+      font-size: 1.4rem;
+    }
+    .game-over-layer .btn-primary {
+      min-width: 200px;
+    }
+    .game-hud {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+    .game-hud strong { color: var(--mint); }
+    .game-actions { text-align: center; margin-top: 14px; }
+
+    @media (max-width: 600px) {
+      html, body { overflow-x: hidden; }
+      .game-page { padding: 28px 16px 72px; }
+      .game-box { padding: 14px; }
+      #gameCanvas {
+        height: min(300px, 46vh);
+        min-height: 220px;
+      }
+      .game-hud {
+        font-size: 0.8rem;
+        gap: 8px;
+        justify-content: center;
+      }
+      .header-inner { padding: 12px 16px; }
+      nav a { font-size: 0.82rem; }
+      .fab {
+        bottom: max(16px, env(safe-area-inset-bottom, 0px));
+        right: max(16px, env(safe-area-inset-right, 0px));
+        width: 52px;
+        height: 52px;
+      }
+    }
+
+    footer {
+      padding: 28px 20px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      background: #fff;
+    }
+
+    .fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 12px 32px rgba(199, 91, 122, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+    .fab:hover { transform: scale(1.05); }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 18, 24, 0.4);
+      z-index: 300;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      width: 100%;
+      max-width: 440px;
+      max-height: 85vh;
+      border-radius: var(--radius) var(--radius) 12px 12px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.15);
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-head h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-family: var(--font-display);
+      font-weight: 600;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+      line-height: 1;
+    }
+    .modal-body {
+      padding: 16px 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .chat-msg {
+      padding: 10px 14px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      font-size: 0.92rem;
+      max-width: 92%;
+    }
+    .chat-msg.bot { background: #e4faf2; color: var(--text); }
+    .chat-msg.user {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+      color: #fff;
+      margin-left: auto;
+    }
+    .chat-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .chip {
+      font-size: 0.8rem;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .chip:hover { border-color: var(--mint-mid); color: var(--mint-mid); }
+    .chat-input-row { display: flex; gap: 8px; margin-top: 12px; }
+    .chat-input-row input {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      font-family: inherit;
+      font-size: 0.92rem;
+    }
+    .chat-input-row button {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-body);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="BIOMED_Molecular_White_demo.html" class="logo">BIOMED <span>Molecular White</span></a>
+      <nav>
+        <a href="BIOMED_Molecular_White_demo.html">Home</a>
+        <a href="BIOMED_Molecular_White_demo.html#banners">Banners</a>
+        <a href="BIOMED_Molecular_White_products.html">Lines</a>
+        <a href="BIOMED_Molecular_White_game.html" class="is-current">Game</a>
+        <a href="BIOMED_Molecular_White_demo.html#levels">Progress</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="game-page">
+    <p class="section-label">game</p>
+    <h1>Catch the molecules</h1>
+    <p class="lead">Steer the beam with your mouse or finger. Catch product icons; avoid monsters (3 lives). Pause or game over converts your score to XP — see Progress on the home page.</p>
+    <p style="margin-bottom:24px;">
+      <a class="btn btn-ghost" href="BIOMED_Molecular_White_demo.html">← Back to home</a>
+    </p>
+
+    <div class="game-box">
+      <div class="game-stage">
+        <canvas id="gameCanvas" width="720" height="320" aria-label="Catch the molecules mini-game"></canvas>
+        <div class="game-over-layer" id="gameOverLayer" role="dialog" aria-modal="true" aria-labelledby="goTitle">
+          <h2 id="goTitle">GAME OVER</h2>
+          <p class="game-over-score">Score: <strong id="finalScore">0</strong></p>
+          <button type="button" class="btn btn-primary" id="gameRetryBtn">Try again</button>
+        </div>
+      </div>
+      <div class="game-hud">
+        <span>Score: <strong id="scoreVal">0</strong></span>
+        <span>Lives: <strong id="livesVal">3</strong></span>
+        <span>Best: <strong id="hiVal">0</strong></span>
+        <span>Total +XP: <strong id="xpVal">0</strong></span>
+      </div>
+      <div class="game-actions">
+        <button type="button" class="btn btn-primary" id="gameStartBtn">Start / Pause</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>BIOMED Molecular White</strong></p>
+    <p style="margin-top:8px;">© 2026</p>
+  </footer>
+
+  <button type="button" class="fab" id="openAssistant" title="Assistant" aria-label="Open assistant">✦</button>
+
+  <div class="modal-overlay" id="assistantModal" role="dialog" aria-modal="true" aria-labelledby="asstTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="asstTitle">Molecular White assistant</h3>
+        <button type="button" class="modal-close" id="closeAssistant" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body" id="chatBody">
+        <div class="chat-msg bot">Hi! Ask about the range or the game. XP syncs with Progress on the home page.</div>
+        <div class="chat-actions" id="chipWrap"></div>
+        <div id="chatStream"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="Your question…" autocomplete="off" />
+          <button type="button" id="chatSend">→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_XP = "mw_demo_xp";
+      const STORAGE_HI = "mw_game_hi";
+
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+      let W = canvas.width, H = canvas.height;
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        const scale = window.devicePixelRatio || 1;
+        canvas.width = rect.width * scale;
+        canvas.height = rect.height * scale;
+        ctx.setTransform(scale, 0, 0, scale, 0, 0);
+        W = rect.width;
+        H = rect.height;
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      let playing = false;
+      let score = 0;
+      let lives = 3;
+      let hi = parseInt(localStorage.getItem(STORAGE_HI) || "0", 10);
+      let mx = W / 2, my = H / 2;
+      const molecules = [];
+      let spawnTimer = 0;
+      const player = { x: W / 2, y: H - 36, w: 100, h: 10 };
+      const goodDropImages = [];
+      const monsterImg = new Image();
+      monsterImg.src = "site-assets/game/monster-bad.svg";
+      let monsterReady = false;
+      monsterImg.onload = () => { monsterReady = true; };
+
+      const gameOverLayer = document.getElementById("gameOverLayer");
+      const finalScoreEl = document.getElementById("finalScore");
+      const livesEl = document.getElementById("livesVal");
+
+      function hideGameOver() {
+        gameOverLayer.classList.remove("is-visible");
+      }
+
+      function showGameOver() {
+        finalScoreEl.textContent = String(score);
+        gameOverLayer.classList.add("is-visible");
+      }
+
+      function settleRound() {
+        if (score > hi) {
+          hi = score;
+          localStorage.setItem(STORAGE_HI, String(hi));
+        }
+        document.getElementById("hiVal").textContent = hi;
+        const add = Math.floor(score / 5);
+        let xp = parseInt(localStorage.getItem(STORAGE_XP) || "0", 10);
+        xp += add;
+        localStorage.setItem(STORAGE_XP, String(xp));
+        refreshXpDisplay();
+      }
+
+      function triggerGameOver() {
+        playing = false;
+        settleRound();
+        showGameOver();
+      }
+
+      fetch("products-data.json", { cache: "no-store" })
+        .then(r => (r.ok ? r.json() : null))
+        .then(data => {
+          if (!data) return;
+          let paths = [];
+          if (Array.isArray(data.gameIcons) && data.gameIcons.length) {
+            paths = data.gameIcons.slice();
+          } else {
+            const items = Array.isArray(data.products) ? data.products : [];
+            paths = [...new Set(items.map(p => p.gameFallingImage).filter(Boolean))];
+          }
+          paths.forEach(p => {
+            const img = new Image();
+            img.src = p;
+            img.onload = () => { goodDropImages.push(img); };
+          });
+        })
+        .catch(() => {});
+
+      function spawn() {
+        const bad = Math.random() < 0.22;
+        const img =
+          !bad && goodDropImages.length
+            ? goodDropImages[Math.floor(Math.random() * goodDropImages.length)]
+            : null;
+        molecules.push({
+          x: Math.random() * (W - 24) + 12,
+          y: -20,
+          r: 10 + Math.random() * 6,
+          vy: 2 + Math.random() * 2.5,
+          bad: bad,
+          img: img
+        });
+      }
+
+      function loop() {
+        if (!playing) return requestAnimationFrame(loop);
+        ctx.clearRect(0, 0, W, H);
+        const grd = ctx.createLinearGradient(0, 0, 0, H);
+        grd.addColorStop(0, "#4a3545");
+        grd.addColorStop(1, "#1a1218");
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, W, H);
+
+        spawnTimer++;
+        if (spawnTimer > (playing ? 28 : 9999)) {
+          spawnTimer = 0;
+          spawn();
+        }
+
+        player.x += (mx - player.x) * 0.18;
+        player.x = Math.max(player.w / 2, Math.min(W - player.w / 2, player.x));
+
+        ctx.fillStyle = "rgba(125, 212, 184, 0.4)";
+        ctx.fillRect(player.x - player.w / 2, player.y, player.w, player.h);
+        ctx.fillStyle = "#fce3ec";
+        ctx.font = "500 11px Onest, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Molecular beam", player.x, player.y - 6);
+
+        for (let i = molecules.length - 1; i >= 0; i--) {
+          const m = molecules[i];
+          m.y += m.vy;
+          ctx.beginPath();
+          ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+          if (!m.bad && m.img) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(m.img, m.x - m.r, m.y - m.r, m.r * 2, m.r * 2);
+            ctx.restore();
+            ctx.strokeStyle = "#d4faf0";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          } else if (m.bad && monsterReady) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(monsterImg, m.x - m.r, m.y - m.r, m.r * 2, m.r * 2);
+            ctx.restore();
+            ctx.strokeStyle = "#c4b5fd";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          } else {
+            ctx.fillStyle = m.bad ? "#a855f7" : "#7dd4b8";
+            ctx.globalAlpha = 0.92;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+            ctx.strokeStyle = m.bad ? "#ddd6fe" : "#d4faf0";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+
+          if (m.y > H + 30) {
+            molecules.splice(i, 1);
+            continue;
+          }
+          const dx = Math.abs(m.x - player.x) < player.w / 2 + m.r;
+          const dy = m.y > player.y - 4 && m.y < player.y + player.h + m.r;
+          if (dx && dy) {
+            if (m.bad) {
+              lives = Math.max(0, lives - 1);
+              livesEl.textContent = String(lives);
+              molecules.splice(i, 1);
+              if (lives <= 0) {
+                triggerGameOver();
+                break;
+              }
+            } else {
+              score += 10;
+              molecules.splice(i, 1);
+              document.getElementById("scoreVal").textContent = score;
+            }
+          }
+        }
+
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+
+      canvas.addEventListener("mousemove", e => {
+        const r = canvas.getBoundingClientRect();
+        mx = e.clientX - r.left;
+        my = e.clientY - r.top;
+      });
+      function touchToMx(e) {
+        const r = canvas.getBoundingClientRect();
+        mx = e.touches[0].clientX - r.left;
+      }
+      canvas.addEventListener("touchstart", e => {
+        e.preventDefault();
+        touchToMx(e);
+      }, { passive: false });
+      canvas.addEventListener("touchmove", e => {
+        e.preventDefault();
+        touchToMx(e);
+      }, { passive: false });
+
+      function refreshXpDisplay() {
+        const xp = localStorage.getItem(STORAGE_XP) || "0";
+        document.getElementById("xpVal").textContent = xp;
+      }
+
+      document.getElementById("gameStartBtn").addEventListener("click", () => {
+        if (gameOverLayer.classList.contains("is-visible")) {
+          hideGameOver();
+          score = 0;
+          lives = 3;
+          document.getElementById("scoreVal").textContent = "0";
+          livesEl.textContent = "3";
+          molecules.length = 0;
+          playing = true;
+          return;
+        }
+        playing = !playing;
+        if (playing) {
+          hideGameOver();
+          score = 0;
+          lives = 3;
+          document.getElementById("scoreVal").textContent = "0";
+          livesEl.textContent = "3";
+          molecules.length = 0;
+        } else {
+          settleRound();
+        }
+      });
+
+      document.getElementById("gameRetryBtn").addEventListener("click", () => {
+        hideGameOver();
+        score = 0;
+        lives = 3;
+        document.getElementById("scoreVal").textContent = "0";
+        livesEl.textContent = "3";
+        molecules.length = 0;
+        playing = true;
+      });
+
+      document.getElementById("hiVal").textContent = hi;
+      livesEl.textContent = "3";
+      refreshXpDisplay();
+
+      const knowledge = [
+        { q: "How is XP earned?", a: "After Pause or GAME OVER, your score is divided by 5 (integer) and added to total XP in the browser. Open the home page — the Progress bar updates." },
+        { q: "What about bad drops?", a: "They look like little monsters. Each catch costs one life (you start with 3). At 0 lives you get GAME OVER on a blue blurred screen with your final score. Catch product-icon drops for points." },
+        { q: "Where are Guava and Strawberry?", a: "On the Lines page: Guava and Forest mint are mass; Strawberry and Fresh cucumber & mint are premium." }
+      ];
+
+      const chipWrap = document.getElementById("chipWrap");
+      const stream = document.getElementById("chatStream");
+      knowledge.forEach((k) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.textContent = k.q.length > 42 ? k.q.slice(0, 40) + "…" : k.q;
+        b.addEventListener("click", () => appendMsg(k.a, "bot"));
+        chipWrap.appendChild(b);
+      });
+
+      function appendMsg(html, cls) {
+        const d = document.createElement("div");
+        d.className = "chat-msg " + cls;
+        d.textContent = html;
+        stream.appendChild(d);
+        stream.parentElement.scrollTop = stream.parentElement.scrollHeight;
+      }
+
+      document.getElementById("chatSend").addEventListener("click", () => {
+        const inp = document.getElementById("chatInput");
+        const v = inp.value.trim();
+        if (!v) return;
+        appendMsg(v, "user");
+        inp.value = "";
+        setTimeout(() => appendMsg("Ask about XP, drops, or open the home page for line descriptions.", "bot"), 350);
+      });
+      document.getElementById("chatInput").addEventListener("keydown", e => {
+        if (e.key === "Enter") document.getElementById("chatSend").click();
+      });
+
+      const modal = document.getElementById("assistantModal");
+      document.getElementById("openAssistant").addEventListener("click", () => modal.classList.add("open"));
+      document.getElementById("closeAssistant").addEventListener("click", () => modal.classList.remove("open"));
+      modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
+    })();
+  </script>
+</body>
+</html>

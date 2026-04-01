@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BIOMED roadmap — Gantt chart</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --grid: #e5e7eb;
+      --header: #eef2ff;
+      --phase1: #3b82f6;
+      --phase2: #10b981;
+      --phase3: #f59e0b;
+      --phase4: #8b5cf6;
+      --milestone: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1220px;
+      margin: 24px auto;
+      padding: 0 16px 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+      overflow: hidden;
+    }
+
+    .gantt {
+      display: grid;
+      grid-template-columns: 320px repeat(12, 1fr);
+      min-width: 1080px;
+    }
+
+    .cell {
+      border-right: 1px solid var(--grid);
+      border-bottom: 1px solid var(--grid);
+      min-height: 44px;
+      position: relative;
+      background: #fff;
+    }
+
+    .head {
+      background: var(--header);
+      font-weight: 600;
+      font-size: 12px;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6px;
+    }
+
+    .task-head {
+      justify-content: flex-start;
+      padding-left: 12px;
+      font-size: 13px;
+    }
+
+    .task {
+      padding: 8px 10px;
+      font-size: 13px;
+      line-height: 1.25;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: #fff;
+    }
+
+    .task .name { font-weight: 600; }
+    .task .meta { color: var(--muted); font-size: 10px; margin-top: 2px; }
+
+    .bar {
+      position: absolute;
+      left: 4%;
+      right: 4%;
+      top: 10px;
+      height: 24px;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 6px;
+    }
+
+    .p1 { background: var(--phase1); }
+    .p2 { background: var(--phase2); }
+    .p3 { background: var(--phase3); }
+    .p4 { background: var(--phase4); }
+
+    .milestone {
+      width: 14px;
+      height: 14px;
+      background: var(--milestone);
+      transform: rotate(45deg);
+      position: absolute;
+      top: 15px;
+      left: calc(50% - 7px);
+      border-radius: 2px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      border-top: 1px solid var(--grid);
+      background: #fafafa;
+      font-size: 12px;
+      color: #334155;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+      margin-right: 6px;
+      vertical-align: -2px;
+    }
+
+    .note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1100px) {
+      .card { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>BIOMED roadmap (Malaysia/Singapore → Thailand/Indonesia), 12 months</h1>
+    <p class="subtitle">Gantt-style layout: tasks in rows, months in columns; colours show launch and scale phases.</p>
+
+    <div class="card">
+      <div class="gantt">
+        <!-- Header -->
+        <div class="cell head task-head">Phase / task</div>
+        <div class="cell head">M1</div><div class="cell head">M2</div><div class="cell head">M3</div><div class="cell head">M4</div>
+        <div class="cell head">M5</div><div class="cell head">M6</div><div class="cell head">M7</div><div class="cell head">M8</div>
+        <div class="cell head">M9</div><div class="cell head">M10</div><div class="cell head">M11</div><div class="cell head">M12</div>
+
+        <!-- Row 1 -->
+        <div class="cell task"><span class="name">Phase 1: Launch prep</span><span class="meta">CNH/RP, documents, SKU matrix, content</span></div>
+        <div class="cell"><div class="bar p1">Prep</div></div>
+        <div class="cell"><div class="bar p1">Prep</div></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+
+        <!-- Row 2 -->
+        <div class="cell task"><span class="name">Phase 2: Malaysia + Singapore pilot</span><span class="meta">H&amp;B + e-commerce, general trade start in Malaysia</span></div>
+        <div class="cell"></div><div class="cell"></div>
+        <div class="cell"><div class="bar p2">Pilot</div></div>
+        <div class="cell"><div class="bar p2">Pilot</div></div>
+        <div class="cell"><div class="bar p2">Pilot</div></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+
+        <!-- Row 3 -->
+        <div class="cell task"><span class="name">Phase 3: Optimisation &amp; scale</span><span class="meta">Boost best-seller SKUs, premium extensions</span></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"><div class="bar p3">Optim.</div></div>
+        <div class="cell"><div class="bar p3">Optim.</div></div>
+        <div class="cell"><div class="bar p3">Optim.</div></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+
+        <!-- Row 4 -->
+        <div class="cell task"><span class="name">Phase 4: Thailand / Indonesia rollout</span><span class="meta">Reuse MY/SG model, adapt channels</span></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"><div class="bar p4">Rollout</div></div>
+        <div class="cell"><div class="bar p4">Rollout</div></div>
+        <div class="cell"><div class="bar p4">Rollout</div></div>
+        <div class="cell"><div class="bar p4">Rollout</div></div>
+
+        <!-- Row 5 -->
+        <div class="cell task"><span class="name">Milestone: PMF confirmed</span><span class="meta">Stable sell-out and repeat purchase</span></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"><div class="milestone"></div></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+
+        <!-- Row 6 -->
+        <div class="cell task"><span class="name">Milestone: year-2 scale readiness</span><span class="meta">Final playbook + year-2 budget</span></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"><div class="milestone"></div></div>
+      </div>
+
+      <div class="legend">
+        <span><i class="dot" style="background:#3b82f6"></i>Phase 1: Prep</span>
+        <span><i class="dot" style="background:#10b981"></i>Phase 2: MY + SG pilot</span>
+        <span><i class="dot" style="background:#f59e0b"></i>Phase 3: Optimisation</span>
+        <span><i class="dot" style="background:#8b5cf6"></i>Phase 4: TH / ID rollout</span>
+        <span><i class="dot" style="background:#ef4444"></i>Milestone</span>
+      </div>
+    </div>
+
+    <p class="note">On request: weekly breakdown, owners, and KPIs per Gantt row.</p>
+  </div>
+</body>
+</html>

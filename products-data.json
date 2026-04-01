@@ -1,0 +1,156 @@
+{
+  "source": "Retail price in USD (MY & SG), без промо-уровней. Курсы: 1 USD = 4.05 MYR; 1 SGD = 0.78 USD.",
+  "fx": {
+    "note": "MYR→USD: ÷4.05. SGD→USD: ×0.78."
+  },
+  "gameIcons": [
+    "site-assets/game-icons/game-icon-01.png",
+    "site-assets/game-icons/game-icon-02.png",
+    "site-assets/game-icons/game-icon-03.png",
+    "site-assets/game-icons/game-icon-04.png"
+  ],
+  "sharedIcons": [
+    "site-assets/products/icons-v3/shared-icon-01.png",
+    "site-assets/products/icons-v3/shared-icon-02.png",
+    "site-assets/products/icons-v3/shared-icon-03.png",
+    "site-assets/products/icons-v3/shared-icon-04.png",
+    "site-assets/products/icons-v3/shared-icon-05.png",
+    "site-assets/products/icons-v3/shared-icon-06.png"
+  ],
+  "products": [
+    {
+      "id": "guava",
+      "line": "mass",
+      "name": "BIOMED Molecular White Guava",
+      "priceUsd": "$3.93 (MY) · $6.55 (SG)",
+      "image": "site-assets/products/guava-main.png",
+      "description": "SENSITIVITY RELIEF + WHITENING UP TO 3 SHADES.",
+      "icons": [
+        "site-assets/products/guava-icon-vegan.png",
+        "site-assets/products/guava-icon-natural-certified.png",
+        "site-assets/products/guava-icon-gluten-free.png",
+        "site-assets/products/guava-icon-clinically-tested.png",
+        "site-assets/products/guava-icon-fluoride-free.png",
+        "site-assets/products/guava-icon-halal.png"
+      ],
+      "gameFallingImage": "site-assets/products/guava-game-fall.png"
+    },
+    {
+      "id": "forest-mint",
+      "line": "mass",
+      "name": "BIOMED Molecular White Forest Mint",
+      "priceUsd": "$3.93 (MY) · $6.55 (SG)",
+      "image": "site-assets/products/forest-mint-main.png",
+      "description": "SENSITIVITY RELIEF + WHITENING UP TO 3 SHADES.",
+      "icons": [
+        "site-assets/products/forest-mint-icon-vegan.png",
+        "site-assets/products/forest-mint-icon-natural-certified.png",
+        "site-assets/products/forest-mint-icon-gluten-free.png",
+        "site-assets/products/forest-mint-icon-clinically-tested.png",
+        "site-assets/products/forest-mint-icon-fluoride-free.png",
+        "site-assets/products/forest-mint-icon-halal.png"
+      ],
+      "gameFallingImage": "site-assets/products/forest-mint-game-fall.png"
+    },
+    {
+      "id": "strawberry",
+      "line": "premium",
+      "name": "BIOMED Molecular White Strawberry — Stain/Protein Removal + Whitening",
+      "priceUsd": "$6.64 (MY) · $7.72 (SG)",
+      "image": "site-assets/products/strawberry-main.png",
+      "description": "ENAMEL STRENGTHENING + WHITENING UP TO 4 SHADES.",
+      "icons": [
+        "site-assets/products/strawberry-icon-vegan.png",
+        "site-assets/products/strawberry-icon-natural-certified.png",
+        "site-assets/products/strawberry-icon-gluten-free.png",
+        "site-assets/products/strawberry-icon-clinically-tested.png",
+        "site-assets/products/strawberry-icon-fluoride-free.png",
+        "site-assets/products/strawberry-icon-halal.png"
+      ],
+      "gameFallingImage": "site-assets/products/strawberry-game-fall.png"
+    },
+    {
+      "id": "fresh-cucumber-mint",
+      "line": "premium",
+      "name": "BIOMED Molecular White Fresh Cucumber & Mint — Halitosis Control + Prolonged Freshness + Whitening",
+      "priceUsd": "$6.64 (MY) · $7.72 (SG)",
+      "image": "site-assets/products/cucumber-mint-main.png",
+      "description": "PROLONG FRESHNESS + WHITENING UP TO 4 SHADES.",
+      "icons": [
+        "site-assets/products/cucumber-mint-icon-vegan.png",
+        "site-assets/products/cucumber-mint-icon-natural-certified.png",
+        "site-assets/products/cucumber-mint-icon-gluten-free.png",
+        "site-assets/products/cucumber-mint-icon-clinically-tested.png",
+        "site-assets/products/cucumber-mint-icon-fluoride-free.png",
+        "site-assets/products/cucumber-mint-icon-halal.png"
+      ],
+      "gameFallingImage": "site-assets/products/cucumber-mint-game-fall.png"
+    }
+  ],
+  "extensions": [
+    {
+      "id": "breath-spray",
+      "name": "BIOMED Breath Spray",
+      "priceUsd": "$4.17 (MY) · $5.07 (SG)",
+      "image": "site-assets/products/ext-breath-spray-main.png",
+      "bannerHome": "site-assets/products/banner-breath-spray.png",
+      "description": "BREATH FRESHNESS + WHITENING UP TO 4 SHADES.",
+      "icons": [
+        "site-assets/products/ext-breath-spray-icon-vegan.png",
+        "site-assets/products/ext-breath-spray-icon-natural-certified.png",
+        "site-assets/products/ext-breath-spray-icon-gluten-free.png",
+        "site-assets/products/ext-breath-spray-icon-clinically-tested.png",
+        "site-assets/products/ext-breath-spray-icon-fluoride-free.png",
+        "site-assets/products/ext-breath-spray-icon-halal.png"
+      ]
+    },
+    {
+      "id": "whitening-lozenges",
+      "name": "BIOMED Whitening Lozenges",
+      "priceUsd": "$3.93 (MY) · $4.84 (SG)",
+      "image": "site-assets/products/ext-lozenges-main.png",
+      "bannerHome": "site-assets/products/banner-lozenges.png",
+      "description": "WHITENING LOZENGES + FRESHNESS.",
+      "icons": [
+        "site-assets/products/ext-lozenges-icon-vegan.png",
+        "site-assets/products/ext-lozenges-icon-natural-certified.png",
+        "site-assets/products/ext-lozenges-icon-gluten-free.png",
+        "site-assets/products/ext-lozenges-icon-clinically-tested.png",
+        "site-assets/products/ext-lozenges-icon-fluoride-free.png",
+        "site-assets/products/ext-lozenges-icon-halal.png"
+      ]
+    },
+    {
+      "id": "dental-floss",
+      "name": "BIOMED Dental Floss Pro Clean",
+      "priceUsd": "$3.19 (MY) · $3.82 (SG)",
+      "image": "site-assets/products/ext-floss-main.png",
+      "bannerHome": "site-assets/products/banner-floss.png",
+      "description": "PRO CLEAN FLOSS, ideal for deep interdental cleaning. 0%.",
+      "icons": [
+        "site-assets/products/ext-floss-icon-vegan.png",
+        "site-assets/products/ext-floss-icon-natural-certified.png",
+        "site-assets/products/ext-floss-icon-gluten-free.png",
+        "site-assets/products/ext-floss-icon-clinically-tested.png",
+        "site-assets/products/ext-floss-icon-fluoride-free.png",
+        "site-assets/products/ext-floss-icon-halal.png"
+      ]
+    },
+    {
+      "id": "all-day-kit",
+      "name": "BIOMED All-Day Fresh Kit",
+      "priceUsd": "$8.86 (MY) · $11.62 (SG)",
+      "image": "site-assets/products/ext-kit-main.png",
+      "bannerHome": "site-assets/products/banner-kit.png",
+      "description": "ALL-DAY FRESH KIT + WHITENING UP TO 4 SHADES.",
+      "icons": [
+        "site-assets/products/ext-kit-icon-vegan.png",
+        "site-assets/products/ext-kit-icon-natural-certified.png",
+        "site-assets/products/ext-kit-icon-gluten-free.png",
+        "site-assets/products/ext-kit-icon-clinically-tested.png",
+        "site-assets/products/ext-kit-icon-fluoride-free.png",
+        "site-assets/products/ext-kit-icon-halal.png"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Загрузка медиа · BIOMED Molecular White</title>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fff9fb;
+      --card: #ffffff;
+      --line: rgba(199, 91, 122, 0.2);
+      --text: #1a1218;
+      --muted: #6b5f68;
+      --accent: #c75b7a;
+      --accent-deep: #a84866;
+      --accent-soft: #fce3ec;
+      --err: #c23d4a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Onest", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 24px 16px 48px;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 {
+      font-family: "Unbounded", sans-serif;
+      font-size: 1.35rem;
+      margin: 0 0 8px;
+    }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; }
+    a { color: var(--accent); }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+    .panel h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-deep);
+      margin: 0 0 14px;
+    }
+    label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 6px; }
+    input[type="password"],
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--accent-soft);
+      color: var(--text);
+      font: inherit;
+      margin-bottom: 12px;
+    }
+    .row { margin-bottom: 14px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font: inherit;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .hint { font-size: 0.78rem; color: var(--muted); margin-top: 6px; }
+    .ok { color: var(--accent); font-size: 0.88rem; margin-top: 8px; }
+    .err { color: var(--err); font-size: 0.88rem; margin-top: 8px; }
+    .preview {
+      margin-top: 8px;
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+    .icon-grid {
+      display: grid;
+      gap: 12px;
+    }
+    @media (min-width: 520px) {
+      .icon-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .icon-slot {
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .icon-slot strong { font-size: 0.75rem; color: var(--accent-deep); display: block; margin-bottom: 6px; }
+    code { font-size: 0.75rem; color: var(--muted); word-break: break-all; }
+  </style>
+</head>
+<body>
+  <h1>Админка · загрузка карточек</h1>
+  <p class="sub">
+    Сервер: <code id="origin"></code> · Откройте эту страницу только после <code>npm start</code> в папке проекта.
+    Сайт: <a href="BIOMED_Molecular_White_demo.html">главная</a> ·
+    <a href="BIOMED_Molecular_White_products.html">линейки</a>
+  </p>
+
+  <div class="panel">
+    <h2>Доступ</h2>
+    <label for="token">Токен (по умолчанию <code>biomed-admin</code>, см. <code>ADMIN_TOKEN</code> в терминале)</label>
+    <input type="password" id="token" autocomplete="off" placeholder="biomed-admin" />
+    <p class="hint">Сохраняется в браузере (sessionStorage) после первой успешной загрузки.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Выбор SKU</h2>
+    <label for="scope">Тип</label>
+    <select id="scope">
+      <option value="product">Пасты (mass / premium)</option>
+      <option value="extension">Non-paste extensions</option>
+    </select>
+    <label for="itemId">Продукт</label>
+    <select id="itemId"></select>
+    <p class="hint" id="pathsHint"></p>
+  </div>
+
+  <div class="panel">
+    <h2>Главное фото карточки</h2>
+    <input type="file" id="fileMain" accept="image/png,image/jpeg,image/webp,image/gif" />
+    <button type="button" class="btn" id="btnMain">Загрузить фото</button>
+    <div id="msgMain"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Иконки (6 штук)</h2>
+    <p class="hint">Порядок: Vegan → Natural → Gluten-free → Clinical → Fluoride-free → Halal. Файлы записываются по путям из <code>products-data.json</code>.</p>
+    <div class="icon-grid" id="iconGrid"></div>
+  </div>
+
+  <div class="panel" id="panelExtra">
+    <h2>Дополнительно</h2>
+    <div id="extBanner" style="display:none;">
+      <label>Баннер для главной (extension)</label>
+      <input type="file" id="fileBanner" accept="image/png,image/jpeg,image/webp" />
+      <button type="button" class="btn" id="btnBanner">Загрузить баннер</button>
+      <div id="msgBanner"></div>
+    </div>
+    <div id="prodFall" style="display:none; margin-top:16px;">
+      <label>Спрайт «падения» для игры (product)</label>
+      <input type="file" id="fileFall" accept="image/png,image/jpeg,image/webp" />
+      <button type="button" class="btn" id="btnFall">Загрузить</button>
+      <div id="msgFall"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Иконки мини-игры (4 файла)</h2>
+    <p class="hint">Пути: <code>site-assets/game-icons/game-icon-01.png</code> … <code>04</code></p>
+    <div id="gameIconSlots"></div>
+  </div>
+
+  <script>
+    document.getElementById("origin").textContent = location.origin;
+
+    const TOKEN_KEY = "biomed_admin_token";
+    const tokenInput = document.getElementById("token");
+    const saved = sessionStorage.getItem(TOKEN_KEY);
+    if (saved) tokenInput.value = saved;
+
+    const ICON_LABELS = [
+      "1 · Vegan",
+      "2 · Natural certified",
+      "3 · Gluten free",
+      "4 · Clinically tested",
+      "5 · Fluoride free",
+      "6 · Halal"
+    ];
+
+    let catalog = null;
+
+    async function loadCatalog() {
+      const r = await fetch("/api/catalog");
+      if (!r.ok) throw new Error("catalog");
+      catalog = await r.json();
+      fillItemSelect();
+      renderIconSlots();
+      renderGameIcons();
+      updateHints();
+    }
+
+    function fillItemSelect() {
+      const scope = document.getElementById("scope").value;
+      const sel = document.getElementById("itemId");
+      sel.innerHTML = "";
+      const list = scope === "extension" ? catalog.extensions : catalog.products;
+      list.forEach((item) => {
+        const o = document.createElement("option");
+        o.value = item.id;
+        o.textContent = item.name;
+        sel.appendChild(o);
+      });
+    }
+
+    function currentItem() {
+      const scope = document.getElementById("scope").value;
+      const id = document.getElementById("itemId").value;
+      const list = scope === "extension" ? catalog.extensions : catalog.products;
+      return { scope, id, item: list.find((x) => x.id === id) };
+    }
+
+    function updateHints() {
+      const { item, scope } = currentItem();
+      const el = document.getElementById("pathsHint");
+      if (!item) {
+        el.textContent = "";
+        return;
+      }
+      el.innerHTML =
+        "<strong>Фото:</strong> <code>" +
+        (item.image || "—") +
+        "</code><br><strong>Иконки:</strong> " +
+        (item.icons || []).map((p, i) => "<code>" + p + "</code>").join(" · ");
+
+      document.getElementById("extBanner").style.display = scope === "extension" && item.bannerHome ? "block" : "none";
+      document.getElementById("prodFall").style.display = scope === "product" && item.gameFallingImage ? "block" : "none";
+    }
+
+    function renderIconSlots() {
+      const grid = document.getElementById("iconGrid");
+      grid.innerHTML = "";
+      ICON_LABELS.forEach((label, i) => {
+        const d = document.createElement("div");
+        d.className = "icon-slot";
+        d.innerHTML =
+          "<strong>" +
+          label +
+          '</strong><input type="file" data-idx="' +
+          i +
+          '" accept="image/png,image/jpeg,image/webp" class="inp-icon" />' +
+          '<button type="button" class="btn upload-icon" data-idx="' +
+          i +
+          '">Загрузить</button>' +
+          '<div class="msg-icon" data-idx="' +
+          i +
+          '"></div>';
+        grid.appendChild(d);
+      });
+      grid.querySelectorAll(".upload-icon").forEach((btn) => {
+        btn.addEventListener("click", () => uploadIcon(parseInt(btn.dataset.idx, 10)));
+      });
+    }
+
+    function renderGameIcons() {
+      const box = document.getElementById("gameIconSlots");
+      box.innerHTML = "";
+      (catalog.gameIcons || []).forEach((p, i) => {
+        const d = document.createElement("div");
+        d.className = "row";
+        d.innerHTML =
+          "<label>Slot " +
+          (i + 1) +
+          " — <code>" +
+          p +
+          '</code></label><input type="file" id="gf' +
+          i +
+          '" accept="image/png,image/jpeg,image/webp" />' +
+          '<button type="button" class="btn" data-gi="' +
+          i +
+          '">Загрузить</button><div id="msg-gi-' +
+          i +
+          '"></div>';
+        box.appendChild(d);
+        d.querySelector(".btn").addEventListener("click", () => uploadGameIcon(i));
+      });
+    }
+
+    function getToken() {
+      const t = tokenInput.value.trim() || "biomed-admin";
+      return t;
+    }
+
+    async function postUpload(formData) {
+      const t = getToken();
+      formData.append("token", t);
+      sessionStorage.setItem(TOKEN_KEY, t);
+      const r = await fetch("/api/upload", { method: "POST", body: formData });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || r.statusText);
+      return j;
+    }
+
+    async function uploadMain() {
+      const msg = document.getElementById("msgMain");
+      msg.innerHTML = "";
+      const f = document.getElementById("fileMain").files[0];
+      if (!f) {
+        msg.innerHTML = '<span class="err">Выберите файл</span>';
+        return;
+      }
+      const { scope, id } = currentItem();
+      const fd = new FormData();
+      fd.append("file", f);
+      fd.append("kind", "main");
+      fd.append("scope", scope);
+      fd.append("id", id);
+      try {
+        const j = await postUpload(fd);
+        msg.innerHTML = '<span class="ok">Сохранено: ' + j.saved + " (" + j.bytes + " B)</span>";
+      } catch (e) {
+        msg.innerHTML = '<span class="err">' + e.message + "</span>";
+      }
+    }
+
+    async function uploadIcon(idx) {
+      const msg = document.querySelector('.msg-icon[data-idx="' + idx + '"]');
+      msg.innerHTML = "";
+      const inp = document.querySelector('.inp-icon[data-idx="' + idx + '"]');
+      const f = inp.files[0];
+      if (!f) {
+        msg.innerHTML = '<span class="err">Выберите файл</span>';
+        return;
+      }
+      const { scope, id } = currentItem();
+      const fd = new FormData();
+      fd.append("file", f);
+      fd.append("kind", "icon");
+      fd.append("scope", scope);
+      fd.append("id", id);
+      fd.append("iconIndex", String(idx));
+      try {
+        const j = await postUpload(fd);
+        msg.innerHTML = '<span class="ok">OK: ' + j.saved + "</span>";
+      } catch (e) {
+        msg.innerHTML = '<span class="err">' + e.message + "</span>";
+      }
+    }
+
+    async function uploadBanner() {
+      const msg = document.getElementById("msgBanner");
+      msg.innerHTML = "";
+      const f = document.getElementById("fileBanner").files[0];
+      if (!f) {
+        msg.innerHTML = '<span class="err">Выберите файл</span>';
+        return;
+      }
+      const { id } = currentItem();
+      const fd = new FormData();
+      fd.append("file", f);
+      fd.append("kind", "banner");
+      fd.append("scope", "extension");
+      fd.append("id", id);
+      try {
+        const j = await postUpload(fd);
+        msg.innerHTML = '<span class="ok">OK: ' + j.saved + "</span>";
+      } catch (e) {
+        msg.innerHTML = '<span class="err">' + e.message + "</span>";
+      }
+    }
+
+    async function uploadFall() {
+      const msg = document.getElementById("msgFall");
+      msg.innerHTML = "";
+      const f = document.getElementById("fileFall").files[0];
+      if (!f) {
+        msg.innerHTML = '<span class="err">Выберите файл</span>';
+        return;
+      }
+      const { id } = currentItem();
+      const fd = new FormData();
+      fd.append("file", f);
+      fd.append("kind", "gameFalling");
+      fd.append("scope", "product");
+      fd.append("id", id);
+      try {
+        const j = await postUpload(fd);
+        msg.innerHTML = '<span class="ok">OK: ' + j.saved + "</span>";
+      } catch (e) {
+        msg.innerHTML = '<span class="err">' + e.message + "</span>";
+      }
+    }
+
+    async function uploadGameIcon(idx) {
+      const msg = document.getElementById("msg-gi-" + idx);
+      msg.innerHTML = "";
+      const f = document.getElementById("gf" + idx).files[0];
+      if (!f) {
+        msg.innerHTML = '<span class="err">Выберите файл</span>';
+        return;
+      }
+      const fd = new FormData();
+      fd.append("file", f);
+      fd.append("kind", "gameIcon");
+      fd.append("gameIconIndex", String(idx));
+      try {
+        const j = await postUpload(fd);
+        msg.innerHTML = '<span class="ok">OK: ' + j.saved + "</span>";
+      } catch (e) {
+        msg.innerHTML = '<span class="err">' + e.message + "</span>";
+      }
+    }
+
+    document.getElementById("btnMain").addEventListener("click", uploadMain);
+    document.getElementById("btnBanner").addEventListener("click", uploadBanner);
+    document.getElementById("btnFall").addEventListener("click", uploadFall);
+    document.getElementById("scope").addEventListener("change", () => {
+      fillItemSelect();
+      updateHints();
+    });
+    document.getElementById("itemId").addEventListener("change", updateHints);
+
+    loadCatalog().catch(() => {
+      document.body.insertAdjacentHTML(
+        "afterbegin",
+        '<p class="err" style="padding:16px">Не удалось загрузить /api/catalog. Запустите в папке проекта: <code>npm install && npm start</code></p>'
+      );
+    });
+  </script>
+</body>
+</html>
